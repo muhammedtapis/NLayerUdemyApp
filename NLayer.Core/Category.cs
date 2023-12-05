@@ -9,6 +9,6 @@ namespace NLayer.Core
     public class Category : BaseEntity
     {
         public string Name { get; set; }
-        public ICollection<Product> Products { get; set; } //navigation property. her kategorinin birden fazla productı olabilir.
+        public ICollection<Product> Products { get; set; } //navigation property. bire çok ilişki
     }
 }
