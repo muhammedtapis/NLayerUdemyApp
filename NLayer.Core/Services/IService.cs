@@ -19,9 +19,9 @@ namespace NLayer.Core.Services
 
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
 
-        Task AddAsync(T entity);
+        Task<T> AddAsync(T entity);
 
-        Task AddRangeAsync(IEnumerable<T> entities);
+        Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
 
         //Burada update remove metodları void olamaz çünkü SaveChanges(); yapacağız veritabanına bu değişiklikleri yansıtacağız.
         Task UpdateAsync(T entity);

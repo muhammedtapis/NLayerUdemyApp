@@ -14,7 +14,7 @@ namespace NLayer.Core.Repositories
 
         //IQueryable yapmamızın diğer nedeni biz bu metodu çağırdığımızda metodun devamına başka sorgular da yazabiliriz en son ToList eklediğimizde veritabanına gider.
 
-        IQueryable<T> GetAll(Expression<Func<T, bool>> expression);
+        IQueryable<T> GetAll();
 
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression); //var mı yok mu true false dön.
 

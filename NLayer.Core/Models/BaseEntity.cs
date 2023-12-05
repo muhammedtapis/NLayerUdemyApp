@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NLayer.Core
+namespace NLayer.Core.Models
 {
     //abstractt yapmamızın sebebi bu baseEntityden nesne örneği oluşturulamasın yani soyut yapıyoruz interface gibi
     public abstract class BaseEntity
