@@ -1,3 +1,5 @@
+using System;
+
 namespace NLayer.API
 {
     public class WeatherForecast
