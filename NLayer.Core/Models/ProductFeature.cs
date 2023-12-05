@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NLayer.Core
+namespace NLayer.Core.Models
 {
     //baseEntityden miras almasına gerek yok product ile arasında bire bir ilişki olacağı için o alanlara zaten sahip olacak.
     public class ProductFeature

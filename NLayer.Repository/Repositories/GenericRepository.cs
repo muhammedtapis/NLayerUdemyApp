@@ -37,7 +37,7 @@ namespace NLayer.Repository.Repositories
             return await _dbSet.AnyAsync(expression); //Lambda ifadesine göre var mı yok mu true false dönen metod.
         }
 
-        public IQueryable<T> GetAll(Expression<Func<T, bool>> expression)
+        public IQueryable<T> GetAll()
         {
             return _dbSet.AsNoTracking().AsQueryable(); //efcore çekmiş olduğu dataları memory almasın track etmesin daha performanslı çalışsın.
         }
