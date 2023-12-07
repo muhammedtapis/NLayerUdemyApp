@@ -1,13 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using NLayer.Service.Exceptions;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NLayer.Service.Services
 {
@@ -50,7 +47,13 @@ namespace NLayer.Service.Services
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            //null kontrolunu burada yapıyoruz ACtion metodu dolmasın.oluşturduğumuz custom hata fırlatıyoruz.
+            var hasIt = await _repository.GetByIdAsync(id);
+            if (hasIt == null)
+            {
+                throw new NotFoundException($"{typeof(T).Name}-({id}) not found!"); //generic T classının tipini al ismini göster
+            }
+            return hasIt;
         }
 
         public async Task RemoveAsync(T entity)
