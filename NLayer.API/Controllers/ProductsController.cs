@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NLayer.API.Filters;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
 using NLayer.Core.Services;
@@ -46,6 +47,8 @@ namespace NLayer.API.Controllers
 
         //endpointten id gelcek.
         [HttpGet("{id}")]
+        //eğer bir filter constructorda parametre alıyorsa mutlaka [ServiceFilter] üzerinden kullanmanız gerek.
+        [ServiceFilter(typeof(NotFoundFilter<Product>))]
         public async Task<IActionResult> GetById(int id)
         {
             //yukarıdaki metodun açıklamayı okuyup bununla karşılaştırırsan daha iyi anlarsın birinde product liste birinde tek product dönülüyor.

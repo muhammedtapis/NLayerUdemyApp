@@ -1,3 +1,5 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLayer.API.Filters;
 using NLayer.API.Middlewares;
+using NLayer.API.Modules;
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
@@ -33,6 +36,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
+//cache aktifleme!!!
+builder.Services.AddMemoryCache();
+
 //Db yolu programa tanýtma.
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
@@ -42,23 +48,22 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
-//oluþturduðumuz interfaceleri burada ekliyoruz
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
+//oluþturduðumuz interfaceleri burada ekliyorduk artýk bu ekleme iþlemlerini autofac kütüphanesi sayesinde oluþturduðumuz RepoServiceModule içinde yaptýk.
+//builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));  //generic interface ekliyorsan typeof yapman lazým.
 
-builder.Services.AddScoped<IProductRepository, ProductRepository>(); //productýn özel sorgularýnýn metodlarýnýn olduðu repository ve servis tanýtýmý.
-builder.Services.AddScoped<IProductService, ProductService>();
-
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(); //category özel sorgularýnýn metodlarýnýn olduðu repository ve servis tanýtýmý.
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-
+//filter tanýmlamasý yaptýk çünkü bu filter ctor da interface alýyo
+builder.Services.AddScoped(typeof(NotFoundFilter<>));
 //Mapleme tanýtýmý
 builder.Services.AddAutoMapper(typeof(MapProfile));  //assembly de verebiliriz biz type of verdik.
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//autofac Dependency Injection container!!!! program.cs içinde yaptýðýmýz dependency injectionlarý artýk yeni modülümüzde yapcaz.
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()); //indirdiðimiz autofac kütüphanesi
+//ardýndan bir modül ekleyeceðiz bu modül içerisinde dinamik olarak ekleme  iþlemleri yapacaðýz bu modülü de burada ekledik.
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModule()));
 
 var app = builder.Build();
 
