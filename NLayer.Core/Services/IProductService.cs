@@ -7,6 +7,6 @@ namespace NLayer.Core.Services
     public interface IProductService : IService<Product>
     {
         //metodun dönceği türü değiştirdk controllerda srekli return ile customResponseDto oluşturuyorduk biz serviste oluşturup onu yollayacağız artık.
-        Task<List<ProductWithCategoryDTO>> GetProductsWithCategory();
+        Task<CustomResponseDTO<List<ProductWithCategoryDTO>>> GetProductsWithCategory();
     }
 }

@@ -44,7 +44,7 @@ namespace NLayer.API.Modules
                    .AsImplementedInterfaces().InstancePerLifetimeScope();
 
             //Cacheten işlem yapan servisi baz al IProductService görürsen.
-            builder.RegisterType<ProductServiceWithCaching>().As<IProductService>().InstancePerLifetimeScope();
+            //builder.RegisterType<ProductServiceWithCaching>().As<IProductService>().InstancePerLifetimeScope(); //cacheden okumayı kapadık api-mvc
         }
     }
 }

@@ -20,11 +20,11 @@ namespace NLayer.Service.Services
         }
 
         //bu metod önemli API nin istediği türü gönderiyoruz direkt exception yakalamayı da burda yapabiliriz şuan.
-        public async Task<List<ProductWithCategoryDTO>> GetProductsWithCategory()
+        public async Task<CustomResponseDTO<List<ProductWithCategoryDTO>>> GetProductsWithCategory()
         {
             var productsWithCategory = await _repository.GetProductsWithCategory();
             var productsWithCategoryDTO = _mapper.Map<List<ProductWithCategoryDTO>>(productsWithCategory);
-            return productsWithCategoryDTO;
+            return CustomResponseDTO<List<ProductWithCategoryDTO>>.Success(200, productsWithCategoryDTO);
         }
     }
 }

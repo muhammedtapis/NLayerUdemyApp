@@ -79,13 +79,13 @@ namespace NLayer.Caching
             return Task.FromResult(product);
         }
 
-        public Task<List<ProductWithCategoryDTO>> GetProductsWithCategory()
+        public Task<CustomResponseDTO<List<ProductWithCategoryDTO>>> GetProductsWithCategory()
         {
             //cacheleme yaparken sadece Products dönmüştük constructorda eğer öyle yaparsak cache üzerinden kategorilerine erişemeyiz ya direkt veritabanından
             //bilgiyi çekicez ya da kategorilerle birlikte cacheleme yapıcaz
             var productsWithCategory = _memoryCache.Get<IEnumerable<Product>>(CacheProductKey); //cacheten productları getirdik
             var productsWithCategoryDTO = mapper.Map<List<ProductWithCategoryDTO>>(productsWithCategory); //bunları mapledik biliyoruz çünkü kategorileri de var
-            return Task.FromResult(productsWithCategoryDTO);
+            return Task.FromResult(CustomResponseDTO<List<ProductWithCategoryDTO>>.Success(200, productsWithCategoryDTO));
         }
 
         public async Task RemoveAsync(Product entity)

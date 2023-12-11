@@ -8,6 +8,7 @@ using System.Reflection;
 using FluentValidation.AspNetCore;
 using NLayer.Service.Validations;
 using NLayer.Web;
+using NLayer.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,17 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     {
         option.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name); //migration dosyasý oluþacak yerin adresini verdik.
     });
+});
+
+//MVC-APý birlikte çalýþmasý - gönderilen istekler için yapýlan ayarlar
+builder.Services.AddHttpClient<ProductAPIService>(options =>
+{
+    options.BaseAddress = new Uri(builder.Configuration["BaseUrl"]); //appsettingsten geliyo bu baseUrl
+});
+
+builder.Services.AddHttpClient<CategoryAPIService>(options =>
+{
+    options.BaseAddress = new Uri(builder.Configuration["BaseUrl"]);
 });
 
 //notFoundFilter programa tanýtma
