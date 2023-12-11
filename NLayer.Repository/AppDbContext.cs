@@ -27,5 +27,67 @@ namespace NLayer.Repository
 
             base.OnModelCreating(modelBuilder);
         }
+
+        //savechanges oeverride edicez createdupdated date için
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            //save changes çağırana kadar tüm entityleri memoryde track ediyor ef core, veritabanına yansıtmadan önce burada entity update me edildi yoksa
+            //yeni  mi insert edildi ona bakıp createddate yada updateddate değiştricez
+            //bunun için önce track edilmiş entityleri döncez.
+
+            foreach (var item in ChangeTracker.Entries()) //changeTracker.Entries ile entitylere ulaştık
+            {
+                if (item.Entity is BaseEntity entityReferance) //ulaştığımız entityler bir baseEntity ise entityREferance ataması yap
+                {
+                    switch (item.State)
+                    {
+                        case EntityState.Added:  //eğer entitystate insert ise createdDate değiş
+                            {
+                                entityReferance.CreatedDate = DateTime.Now;
+                                break;
+                            }
+                        case EntityState.Modified: //eğer entitystate update ise updatedDate değiş
+                            {
+                                //eğer güncelleme yapılıyorsa EFcore a createdDate alanının bu güncellemeye dahil olmadığını belirtmemiz gerek
+                                //yoksa default bir değer atıyor createdDAte kayboluyor
+                                Entry(entityReferance).Property(x => x.CreatedDate).IsModified = false; //bu alanı modified değil. eğer bunu yapmazsak efcore bunu modified tanımlayıp bu alanı değişcek.
+                                entityReferance.UpdatedDate = DateTime.Now;
+                                break;
+                            }
+                    }
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        //aynı işlemi saveChanges için de yaptık hem asenkron hem senkron metotlar override edildi
+        public override int SaveChanges()
+        {
+            foreach (var item in ChangeTracker.Entries()) //changeTracker.Entries ile entitylere ulaştık
+            {
+                if (item.Entity is BaseEntity entityReferance) //ulaştığımız entityler bir baseEntity ise entityREferance ataması yap
+                {
+                    switch (item.State)
+                    {
+                        case EntityState.Added:  //eğer entitystate insert ise createdDate değiş
+                            {
+                                entityReferance.CreatedDate = DateTime.Now;
+                                break;
+                            }
+                        case EntityState.Modified: //eğer entitystate update ise updatedDate değiş
+                            {
+                                //eğer güncelleme yapılıyorsa EFcore a createdDate alanının bu güncellemeye dahil olmadığını belirtmemiz gerek
+                                //yoksa default bir değer atıyor createdDAte kayboluyor
+                                Entry(entityReferance).Property(x => x.CreatedDate).IsModified = false; //bu alanı modified değil. eğer bunu yapmazsak efcore bunu modified tanımlayıp bu alanı değişcek.
+
+                                entityReferance.UpdatedDate = DateTime.Now;
+                                break;
+                            }
+                    }
+                }
+            }
+            return base.SaveChanges();
+        }
     }
 }
