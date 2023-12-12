@@ -4,6 +4,7 @@ using NLayer.API.Filters;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
 using NLayer.Core.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NLayer.API.Controllers
@@ -58,6 +59,24 @@ namespace NLayer.API.Controllers
         public async Task<IActionResult> Remove(int id)
         {
             return CreateActionResult(await _productServiceWithDTO.RemoveAsync(id));
+        }
+
+        [HttpPost("SaveAll")]
+        public async Task<IActionResult> Save(List<ProductCreateDTO> productDTOList)
+        {
+            return CreateActionResult(await _productServiceWithDTO.AddRangeAsync(productDTOList));
+        }
+
+        [HttpDelete("RemoveAll")]
+        public async Task<IActionResult> RemoveAll(List<int> idList)
+        {
+            return CreateActionResult(await _productServiceWithDTO.RemoveRangeAsync(idList));
+        }
+
+        [HttpGet("Any/{id}")]
+        public async Task<IActionResult> Any(int id)
+        {
+            return CreateActionResult(await _productServiceWithDTO.AnyAsync(x => x.Id == id));
         }
     }
 }

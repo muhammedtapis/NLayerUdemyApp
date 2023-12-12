@@ -23,6 +23,7 @@ namespace NLayer.Service.Services
 
         public async Task<T> AddAsync(T entity)
         {
+            //UNIT OF WORK kullanımı
             await _repository.AddAsync(entity); //tabloya ekleme işlemi  FLAG DEĞİŞTİRDİ
             await _unitOfWork.CommitAsync(); //veritabanına bu ekleme işlemini kaydetme İŞLEMİ ,KAYIT YAPTI
             return entity;//ekledğimiz satırla işlem yapmak isteyebiliriz o yüzden döndük.

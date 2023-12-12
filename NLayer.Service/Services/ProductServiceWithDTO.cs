@@ -23,6 +23,14 @@ namespace NLayer.Service.Services
             _productRepository = productRepository;
         }
 
+        public async Task<CustomResponseDTO<List<ProductWithCategoryDTO>>> GetProductsWithCategory()
+        {
+            var productsWithCategory = await _productRepository.GetProductsWithCategory();
+            var productsWithCategoryDTO = _mapper.Map<List<ProductWithCategoryDTO>>(productsWithCategory);
+            return CustomResponseDTO<List<ProductWithCategoryDTO>>.Success(200, productsWithCategoryDTO);
+        }
+
+        //overload edilmiş metod
         public async Task<CustomResponseDTO<ProductDTO>> AddAsync(ProductCreateDTO createDTO)
         {
             //gelen dto yau product çevir Mapper üst classtan yanş ServiceWithDTO dan geliyo ama protected olduğu için erişebiliyoruz. üst sınıfta nası tanımladıysak.
@@ -36,13 +44,17 @@ namespace NLayer.Service.Services
             return CustomResponseDTO<ProductDTO>.Success(StatusCodes.Status200OK, newDTO); //fark ettiysen genericDTO değil product dto
         }
 
-        public async Task<CustomResponseDTO<List<ProductWithCategoryDTO>>> GetProductsWithCategory()
+        //overload edilmiş AddRangeAsync() kullanıcıdan ProductCreateDTO list alıyoruz productDTO list değil.
+        public async Task<CustomResponseDTO<IEnumerable<ProductDTO>>> AddRangeAsync(IEnumerable<ProductCreateDTO> productCreateDtoList)
         {
-            var productsWithCategory = await _productRepository.GetProductsWithCategory();
-            var productsWithCategoryDTO = _mapper.Map<List<ProductWithCategoryDTO>>(productsWithCategory);
-            return CustomResponseDTO<List<ProductWithCategoryDTO>>.Success(200, productsWithCategoryDTO);
+            IEnumerable<Product> newEntities = _mapper.Map<IEnumerable<Product>>(productCreateDtoList);
+            await _productRepository.AddRangeAsync(newEntities);
+            await _unitOfWork.CommitAsync();
+            var newDtoList = _mapper.Map<IEnumerable<ProductDTO>>(newEntities);
+            return CustomResponseDTO<IEnumerable<ProductDTO>>.Success(StatusCodes.Status200OK, newDtoList);
         }
 
+        //overload edilmiş metod
         public async Task<CustomResponseDTO<NoContentDTO>> UpdateAsync(ProductUpdateDTO updateDTO)
         {
             var product = _mapper.Map<Product>(updateDTO); //önce gelen dtoyu entity çevir bu entity BaseEntity bu sayede idsine erişebiliyoz.

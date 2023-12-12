@@ -16,6 +16,7 @@ namespace NLayer.Service.Mapping
             CreateMap<ProductUpdateDTO, Product>();//programda productupdateDTO gelirse onu producta maple bu DTOyu özel oluşturmuştuk.
             CreateMap<Product, ProductWithCategoryDTO>();
             CreateMap<Category, CategoryWithProductsDTO>();  //her mapleme için buraya eklemen lazım
+            CreateMap<ProductCreateDTO, Product>(); //sonradan oluşturduğmuz serviste var bu dto maplemesi  DTOservisi
         }
     }
 }

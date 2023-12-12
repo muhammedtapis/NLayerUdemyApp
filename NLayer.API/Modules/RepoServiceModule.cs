@@ -25,9 +25,15 @@ namespace NLayer.API.Modules
             builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(Service<>)).As(typeof(IService<>)).InstancePerLifetimeScope();
 
+            //ServiceWithDTO interface impl. bu generic servis interface iki tane generic tip aldığı için < arasına bir virgül koymak gerek>
+            builder.RegisterGeneric(typeof(ServiceWithDTO<,>)).As(typeof(IServiceWithDTO<,>)).InstancePerLifetimeScope();
+
             //generic olmayan ekleme
             //builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
+
+            //DTO dönen servisin Dependency injectionu
+            builder.RegisterType<ProductServiceWithDTO>().As<IProductServiceWithDTO>().InstancePerLifetimeScope();
 
             var apiAssembly = Assembly.GetExecutingAssembly(); //apinin assemblysi
             var repoAssembly = Assembly.GetAssembly(typeof(AppDbContext)); //repository katmanında herhangi bir classı verdik ordan assmbly bilgisi alcaz.
